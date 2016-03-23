@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    
+    <script>
+    var socket = io();
+    var maxMessages = 10;
+    var steering = { center: 21, right: 0, left:42 };
+    var throttle = { stop: 400, forward: 500, reverse: 300, multiplier: 10 };
+    var messages = $('#messages');
+    var lastOrientation = { beta: steering.center, gamma: throttle.stop };
+    var restrictValueBetween = function(value, max, min) {
+      return Math.min(Math.max(value, min), max);
+    };
+
+    window.ondeviceorientation = function (event) {
+      var orientation = { 
+        beta: restrictValueBetween(Math.round(event.beta*-1) + steering.center, steering.left, steering.right),
+        gamma: restrictValueBetween(Math.round(event.gamma) * throttle.multiplier + throttle.stop, throttle.forward, throttle.reverse)
+      };
+      if (JSON.stringify(lastOrientation) != JSON.stringify(orientation)) {
+        emitOrientationChange(orientation);
+      }
+    }
+
+    function emitOrientationChange(orientation) {
+      lastOrientation = orientation;
+      socket.emit('orientation', orientation);
+      if (messages.children().length > maxMessages) {
+        messages.children().first().remove();
+      }
+      messages.append($('<li>').text(JSON.stringify(orientation)));
+    }
+
+    socket.on('info', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+    </script>
+  </body>
+</html>

@@ -2,13 +2,13 @@
   "name": "johnnys-pi-car",
   "version": "1.0.0",
   "description": "A node.js project which will allow a user to connect their smart phone to a raspberry pi embedded RC car and control the car using the in-built accelerometer.",
-  "main": "index.js",
+  "main": "app/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JonLally/johnnys-pi-car.git"
+    "url": "https://github.com/JonLally/johnnys-pi-car.git"
   },
   "keywords": [
     "raspberryPi",
@@ -17,6 +17,11 @@
   ],
   "author": "Jonathan Lally",
   "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4",
+    "sleep": "^3.0.1",
+    "socket.io": "^1.4.5"
+  },
   "bugs": {
     "url": "https://github.com/JonLally/johnnys-pi-car/issues"
   },
